@@ -2,15 +2,24 @@ import time
 from wtpy import WtEngine, EngineType
 
 import sys
-sys.path.append('../Strategies')
-from HftStraDemo import HftStraDemo
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+# 如果需要，可以将上级目录加入sys.path，避免导入失败
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "..")))
+import path  # 你的路径模块
+
+print("Current working directory:", os.getcwd())
+print("Common path:", path.common_path)
+
+from Strategies.HftStraDemo import HftStraDemo
 
 if __name__ == "__main__":
     #创建一个运行环境，并加入策略
     engine = WtEngine(EngineType.ET_HFT)
 
     #初始化执行环境，传入
-    engine.init(folder = '../common/', cfgfile = "config.yaml")
+    engine.init(folder = path.common_path, cfgfile = path.cfg_path)
 
     #设置数据存储目录
     # engine.configStorage(module="", path="D:\\WTP_Data\\")

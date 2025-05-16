@@ -1,0 +1,9 @@
+{
+  "python.envFile": "${workspaceFolder}/.vscode/.env",
+  "python.defaultInterpreterPath": "python",  // 你可以改成 py310_wtpy 解释器路径
+  "python.analysis.extraPaths": [
+      "${workspaceFolder}"
+  ],
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true
+}

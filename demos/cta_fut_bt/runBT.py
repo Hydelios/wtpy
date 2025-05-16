@@ -2,8 +2,17 @@ from wtpy import WtBtEngine,EngineType
 from wtpy.apps import WtBtAnalyst
 
 import sys
-sys.path.append('../Strategies')
-from DualThrust import StraDualThrust
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+# 如果需要，可以将上级目录加入sys.path，避免导入失败
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "..")))
+import path  # 你的路径模块
+
+print("Current working directory:", os.getcwd())
+print("Common path:", path.common_path)
+# from DualThrust import StraDualThrust
+from Strategies.DualThrust import StraDualThrust
 
 def analyze_with_pyfolio(fund_filename:str, capital:float=500000):
     import pyfolio as pf
@@ -22,6 +31,7 @@ def analyze_with_pyfolio(fund_filename:str, capital:float=500000):
 
     # 调用pyfolio进行分析
     pf.create_full_tear_sheet(rets)
+    # pf.show_perf_stats(rets)
 
     # 如果在jupyter，不需要执行该语句
     plt.show()
@@ -29,9 +39,13 @@ def analyze_with_pyfolio(fund_filename:str, capital:float=500000):
 if __name__ == "__main__":
     #创建一个运行环境，并加入策略
     engine = WtBtEngine(EngineType.ET_CTA)
-    engine.init('../common/', "configbt.yaml")
+    # engine.init('../common/', "configbt.yaml")
+    engine.init(path.common_path, path.cfg_path)
+    
+
     engine.configBacktest(201909100930,201912011500)
-    engine.configBTStorage(mode="csv", path="../storage/")
+    # engine.configBTStorage(mode="csv", path="../storage/")
+    engine.configBTStorage(mode="csv", path=path.storage_path)
 
     # 注册自定义连续合约规则
     # engine.registerCustomRule(ruleTag="0001", filename="../common/hots.json")

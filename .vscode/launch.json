@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Any Python Script in WTPY",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "G:\\MYTRADE\\WTPY"
+            },
+            "justMyCode": false
+        }
+    ]
+}

@@ -98,11 +98,16 @@ class Ifeed(object):
             curTick.pre_close = float(row["pre_close"])
             curTick.pre_settle = float(row["pre_settle"])
             curTick.pre_interest = float(0.0)
+            # for x in range(0,5):
+            #     curTick.bid_prices[x] = float(row["bid_" + str(x+1)])
+            #     curTick.bid_qty[x] = float(row["bid_qty_" + str(x+1)])
+            #     curTick.ask_prices[x] = float(row["ask_" + str(x+1)])
+            #     curTick.ask_qty[x] = float(row["ask_qty_" + str(x+1)])
             for x in range(0,5):
-                curTick.bid_prices[x] = float(row["bid_" + str(x+1)])
-                curTick.bid_qty[x] = float(row["bid_qty_" + str(x+1)])
-                curTick.ask_prices[x] = float(row["ask_" + str(x+1)])
-                curTick.ask_qty[x] = float(row["ask_qty_" + str(x+1)])
+                setattr(curTick, f"bid_price_{x}", float(row[f"bid_{x+1}"]))
+                setattr(curTick, f"bid_qty_{x}", float(row[f"bid_qty_{x+1}"]))
+                setattr(curTick, f"ask_price_{x}", float(row[f"ask_{x+1}"]))
+                setattr(curTick, f"ask_qty_{x}", float(row[f"ask_qty_{x+1}"]))
         return buffer
         
     def bar_df_to_dsb(self,df,dsb_file,period):
@@ -182,10 +187,13 @@ class Ifeed(object):
             self.tick_df_to_dsb(df,dsb_path)
         
 class RqFeed(Ifeed):
-    def __init__(self,user=None,passwd=None):
+    def __init__(self,user=None,passwd=None,key=None):
         super().__init__()
         self.rq = rq
-        self.rq.init(user,passwd)
+        if user is not None and passwd is not None:
+            self.rq.init(user,passwd)
+        else:
+            self.rq.init(key)
         self.bar_col_map = {
             "date":"date",
             "time":"time",
@@ -299,7 +307,13 @@ class RqFeed(Ifeed):
 
 if __name__ == '__main__':
     # 从米筐下载数据
-    feed = RqFeed()
+    feed = RqFeed(
+    """username="license",
+    password="ijrG4v_7TnaKHWHNrwdKehRf2t34JX_GBxMrSlYxnRf0Mq5_F8ycnyYvw1O3h3J-YzOLDFWFkuc8KhcCzm1T-j2oAtp_ALeB9wg0ycA55YNsCPSN-3SiO19buoojNU0wkLnqoDKKh0XtskLKoL5FqFVd_bWLAA29cmwsYnzdSEQ=QwTRF-H3lYajXxaPE19B2JM3PacB0LJkWDJGTkKD0arplEc_4qHILxXQC0IjgN27aYbutzvPdOlCnn4uNZvA3VIgE55NhBtKDQixXyUGAk2n_RFRyLd6lW931L52WiQgkNuTUuyJ3cb4S76K3RMQcRe-88fCPs_L6aHuwK_TJHY=",
+    addr=("rqdatad-pro.ricequant.com", 16011),
+    use_pool=True,
+    max_pool_size=1,
+    auto_load_plugins=False""")
     # 数据存储的目录
     storage_path = "../storage"
     # 输入的代码记得区分大小写
